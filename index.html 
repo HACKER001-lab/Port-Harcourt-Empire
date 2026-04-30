@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORT HARCOURT EMPIRE — Developed by JOSEPH TAMUNOIYANA FRANCIS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{ --bg-0:#05060d; --bg-1:#0b0d18; --bg-2:#141832; --gold:#f5c46b; --gold-2:#e09f3e; --gold-3:#fff3c4; --pink:#ff4d8d; --purple:#8b5cf6; --blue:#3b82f6; --cyan:#22d3ee; --green:#10b981; --red:#ef4444; --orange:#f97316; --text:#f5f5f7; --muted:#9aa0b4; --border:rgba(255,255,255,.08); --glass:rgba(20,24,50,.65); --glass-2:rgba(255,255,255,.04); --shadow-gold:0 0 60px rgba(245,196,107,.35); }
+        *{box-sizing:border-box;margin:0;padding:0} html,body{height:100%;background:var(--bg-0);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;}
+        body{ background: radial-gradient(ellipse at 20% 0%, rgba(139,92,246,.15), transparent 60%), radial-gradient(ellipse at 80% 10%, rgba(245,196,107,.1), transparent 55%), radial-gradient(ellipse at 50% 100%, rgba(255,77,141,.1), transparent 60%), linear-gradient(180deg, #05060d 0%, #0a0c1a 100%); }
+        button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit; outline:none;} input,select,textarea{font-family:inherit} .serif{font-family:'Cinzel',serif;letter-spacing:.04em}
+        
+        /* Premium Animated Background */
+        .stars,.stars2,.stars3{position:fixed;inset:0;pointer-events:none;z-index:0}
+        .stars{background-image: radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1.5px 1.5px at 70% 80%, #fff, transparent), radial-gradient(2px 2px at 60% 40%, #f5c46b, transparent); background-size:600px 600px;opacity:.6;animation:drift 120s linear infinite}
+        @keyframes drift{from{transform:translateY(0)}to{transform:translateY(-600px)}}
+        
+        #app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column; display:none;}
+        
+        /* Header */
+        .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(10,12,26,.95),rgba(10,12,26,.7));backdrop-filter:blur(24px);position:sticky;top:0;z-index:10;}
+        .brand{display:flex;align-items:center;gap:14px;}
+        .brand-logo{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 30% 30%, var(--gold-3), var(--gold-2) 60%, #6b3e0c);box-shadow:0 0 20px rgba(245,196,107,.5), inset 0 0 12px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;color:#1a1208;font-weight:900;font-size:20px; border: 2px solid #fff3c4;}
+        .brand-title{font-family:'Cinzel',serif;font-size:20px;letter-spacing:.2em;color:var(--gold-3);text-shadow:0 0 16px rgba(245,196,107,.5)}
+        .brand-sub{font-size:12px;color:var(--gold);letter-spacing:.3em;text-transform:uppercase;margin-top:4px; font-weight:600;}
+        
+        /* Stats */
+        .stats-bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center; justify-content: flex-end;}
+        .stat-pill{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:12px;background:var(--glass);border:1px solid var(--border);font-size:14px;font-weight:700;backdrop-filter:blur(10px); transition: all 0.3s ease;}
+        .stat-pill.money{color:#10b981;border-color:rgba(16,185,129,.4);box-shadow:0 0 16px rgba(16,185,129,.2); background: rgba(16,185,129,.05);}
+        .stat-pill.health{color:#ef4444;border-color:rgba(239,68,68,.3);}
+        .stat-pill.energy{color:#fbbf24;border-color:rgba(251,191,36,.3);}
+        .stat-pill.fame{color:var(--gold);border-color:rgba(245,196,107,.4);box-shadow:0 0 18px rgba(245,196,107,.2);}
+
+/* Main Layout */
+        .main{flex:1;overflow:hidden;display:flex}
+        .content{flex:1;overflow-y:auto;padding:32px;padding-bottom:140px;scrollbar-width:thin;scrollbar-color:#333 transparent; max-width: 1200px; margin: 0 auto; width: 100%;}
+        .content::-webkit-scrollbar{width:6px} .content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:10px}
+        
+        /* Navigation */
+        .bottom-nav{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);display:flex;gap:8px;padding:10px;border-radius:24px;background:rgba(5,6,13,.9);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.15);box-shadow:0 24px 60px rgba(0,0,0,.8), 0 0 30px rgba(245,196,107,.1);z-index:50;max-width:96vw;overflow-x:auto;}
+        .nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 20px;border-radius:16px;color:var(--muted);font-size:12px;font-weight:700;transition:all .3s ease;white-space:nowrap;letter-spacing:0.05em;}
+        .nav-btn:hover{color:var(--text);background:rgba(255,255,255,.05)}
+        .nav-btn.active{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#1a1208;box-shadow:0 8px 24px rgba(245,196,107,.5); transform: translateY(-2px);}
+        
+        /* Cards & UI */
+        .card{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:26px;backdrop-filter:blur(16px);transition:transform .3s ease, border-color .3s ease;margin-bottom:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
+        .card:hover{border-color:rgba(245,196,107,.3); transform: translateY(-3px);}
+        .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+        .card-title{font-family:'Cinzel',serif;font-size:18px;letter-spacing:.1em;color:var(--gold-3);margin-bottom:8px; font-weight: 900;}
+        .card-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+        
+        .section-title{font-family:'Cinzel',serif;font-size:28px;letter-spacing:.15em;color:var(--gold-3);margin-bottom:24px;text-shadow:0 0 20px rgba(245,196,107,.3);display:flex;align-items:center;gap:12px;}
+        .section-title::before{content:"";display:block;width:6px;height:24px;background:linear-gradient(180deg,var(--gold),var(--gold-2));border-radius:10px;box-shadow:0 0 16px rgba(245,196,107,.6)}
+        
+        /* Buttons */
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 24px;border-radius:14px;font-weight:700;font-size:15px;background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#1a1208;box-shadow:0 8px 24px rgba(245,196,107,.3);transition:all .2s ease; width: 100%; border:none; text-transform:uppercase; letter-spacing:0.05em;}
+        .btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 12px 32px rgba(245,196,107,.5)}
+        .btn:active{transform:translateY(1px) scale(0.98);}
+        .btn.danger{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;box-shadow:0 8px 24px rgba(239,68,68,.3)}
+        .btn.success{background:linear-gradient(135deg,#10b981,#047857);color:#fff;box-shadow:0 8px 24px rgba(16,185,129,.3)}
+        .btn.purple{background:linear-gradient(135deg,var(--purple),#5b21b6);color:#fff;box-shadow:0 8px 24px rgba(139,92,246,.3)}
+        .btn.blue{background:linear-gradient(135deg,var(--blue),#1d4ed8);color:#fff;}
+        .btn.outline{background:transparent; border: 2px solid var(--gold); color: var(--gold-3); box-shadow: none;}
+        .btn.outline:hover{background:rgba(245,196,107,.1);}
+        
+        /* Support & Multiplayer Elements */
+        .premium-box { border: 2px dashed var(--gold); background: rgba(245,196,107,0.05); padding: 20px; border-radius: 16px; text-align: center; margin-top: 20px;}
+        .acct-number { font-size: 32px; font-weight: 900; color: var(--gold-3); letter-spacing: 0.1em; margin: 10px 0; font-family: monospace; text-shadow: 0 0 20px rgba(245,196,107,0.4);}
+
+.bank-name { font-size: 18px; color: #fff; font-weight: 700; background: linear-gradient(90deg, var(--gold), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+        
+        .live-feed { max-height: 300px; overflow-y: auto; display:flex; flex-direction: column; gap:10px; padding-right:10px;}
+        .live-feed::-webkit-scrollbar{width:4px;} .live-feed::-webkit-scrollbar-thumb{background:var(--gold); border-radius:10px;}
+        .feed-item { background: rgba(0,0,0,0.5); border-left: 4px solid var(--purple); padding: 12px 16px; border-radius: 8px; display:flex; justify-content:space-between; align-items:center; animation: slideIn 0.4s ease;}
+        .feed-user { font-weight: 700; color: var(--gold-3); }
+        .feed-action { color: var(--text); font-size: 14px; margin-top: 4px;}
+        .feed-time { font-size: 11px; color: var(--muted); }
+        
+        /* Table for Admin Panel */
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; color: #fff; font-size: 14px;}
+        .admin-table th { background: rgba(255,255,255,0.1); padding: 12px; text-align: left; color: var(--gold); font-family: 'Cinzel', serif;}
+        .admin-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .badge { background: rgba(16,185,129,0.2); color: #10b981; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;}
+        .badge.offline { background: rgba(239,68,68,0.2); color: #ef4444;}
+        
+        /* Modals & Screens */
+        .intro{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:200;background:radial-gradient(circle at center, #1a1632 0%, #05060d 80%);overflow-y:auto;padding:40px 20px}
+        .intro-card{max-width:600px;width:100%;text-align:center;animation:fadeIn 1s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+        .intro-logo{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;background:radial-gradient(circle at 30% 30%, var(--gold-3), var(--gold-2) 50%, #6b3e0c);box-shadow:0 0 100px rgba(245,196,107,.6), inset 0 0 40px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;color:#1a1208;font-weight:900;font-size:60px; border: 4px solid #fff3c4; animation:pulse 3s ease-in-out infinite;}
+        @keyframes pulse{0%,100%{box-shadow:0 0 100px rgba(245,196,107,.6), inset 0 0 40px rgba(0,0,0,.4)}50%{box-shadow:0 0 140px rgba(245,196,107,.9), inset 0 0 40px rgba(0,0,0,.4)}}
+        .intro-title{font-family:'Cinzel',serif;font-size:52px;letter-spacing:.15em;color:var(--gold-3);text-shadow:0 0 40px rgba(245,196,107,.6);margin-bottom:10px;line-height:1.1}
+        .intro-sub{color:var(--muted);font-size:16px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:40px; font-weight: 600;}
+        
+        .field{display:flex;flex-direction:column;gap:8px;text-align:left;margin-bottom:24px}
+        .field label{font-size:13px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase; font-weight:700;}
+        .field input{padding:16px 20px;border-radius:14px;background:rgba(0,0,0,.4);border:2px solid rgba(255,255,255,0.1);color:#fff;font-size:16px;outline:none;transition:all .3s ease; box-shadow: inset 0 4px 20px rgba(0,0,0,0.5);}
+        .field input:focus{border-color:var(--gold); box-shadow: 0 0 20px rgba(245,196,107,0.2), inset 0 4px 20px rgba(0,0,0,0.5);}
+        
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(10px);padding:20px; opacity:0; transition: opacity 0.3s ease;}
+        .modal{background:linear-gradient(180deg,#141832,#05060d);border:1px solid var(--border);border-radius:24px;padding:36px;max-width:800px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.9), 0 0 60px rgba(245,196,107,.15); transform: scale(0.9); transition: transform 0.3s ease; max-height: 90vh; overflow-y: auto;}
+
+.modal.show { transform: scale(1); }
+        .modal-title{font-family:'Cinzel',serif;font-size:26px;letter-spacing:.1em;color:var(--gold-3);margin-bottom:8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;}
+        
+        .toast-container{position:fixed;top:100px;right:24px;z-index:400;display:flex;flex-direction:column;gap:12px;max-width:380px}
+        .toast{padding:16px 20px;border-radius:14px;background:rgba(20,24,50,.95);border:1px solid var(--border);backdrop-filter:blur(24px);font-size:14px;font-weight:600;animation:slideIn .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);box-shadow:0 20px 50px rgba(0,0,0,.8);color:#fff; display:flex; align-items:center; gap:12px;}
+        .toast.success{border-left: 4px solid #10b981;}
+        .toast.danger{border-left: 4px solid #ef4444;}
+        .toast.gold{border-left: 4px solid var(--gold);}
+        @keyframes slideIn{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
+        
+        .admin-trigger { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; opacity: 0; cursor: pointer; z-index: 100; }
+        
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        .footer-credit { margin-top: 40px; font-size: 13px; color: var(--muted); letter-spacing: 0.1em; font-weight: 600;}
+        .dev-name { color: var(--gold); font-weight: 900;}
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+
+    <div class="toast-container" id="toasts"></div>
+
+    <div class="intro" id="intro">
+        <div class="intro-card">
+            <div class="intro-logo">PH</div>
+            <div class="intro-title">PORT HARCOURT EMPIRE</div>
+            <div class="intro-sub">The Premium Multiplayer Experience</div>
+            
+            <div class="card" style="text-align:left;padding:40px">
+                <div class="card-title" style="font-size: 22px;">Enter the Garden City</div>
+                <div class="card-sub" style="font-size: 15px;">Millions are hustling. Will you rise to the top or be swallowed by the streets? Register your citizen below.</div>
+                
+                <div class="field">
+                    <label>Player Username</label>
+                    <input type="text" id="playerName" placeholder="e.g. Odogwu_1, Preye_PHC..." autocomplete="off">
+                </div>
+                
+                <button class="btn" style="padding: 18px; font-size: 16px;" onclick="startGame()">JOIN SERVER</button>
+            </div>
+            <div class="footer-credit">Developed by <span class="dev-name">JOSEPH TAMUNOIYANA FRANCIS</span></div>
+        </div>
+    </div>
+
+    <div class="admin-trigger" onclick="adminClicks()"></div>
+
+    <div id="app">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-logo">PH</div>
+                <div>
+                    <div class="brand-title">PH EMPIRE</div>
+                    <div class="brand-sub">🟢 LIVE SERVER | <span id="navName" style="color:#fff;">Player</span></div>
+                </div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-pill money">₦<span id="statMoney">0</span></div>
+                <div class="stat-pill health">❤️ <span id="statHealth">100</span>%</div>
+                <div class="stat-pill energy">⚡ <span id="statEnergy">100</span>%</div>
+                <div class="stat-pill fame">⭐ <span id="statFame">0</span></div>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="content">
+                
+                <div id="tab-home" class="tab-content active">
+                    <h2 class="section-title">My Dashboard</h2>
+                    <div class="card-grid">
+                        <div class="card">
+
+<div class="card-title">Personal Status</div>
+                            <div class="card-sub">Age: <span id="statAge" style="color:var(--gold); font-weight:bold; font-size:16px;">1</span> Years Old</div>
+                            <button class="btn purple" onclick="ageUp()">Grow Older (+1 Year)</button>
+                            <button class="btn outline" style="margin-top:10px;" onclick="rest()">Sleep in Apartment</button>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title">Personal Log</div>
+                            <div class="live-feed" id="eventFeed" style="max-height: 150px;">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-career" class="tab-content">
+                    <h2 class="section-title">The Hustle</h2>
+                    <div class="card-grid">
+                        <div class="card">
+                            <div class="card-title">Street Hustle</div>
+                            <div class="card-sub">Run errands around Waterlines. Takes 15 energy.</div>
+                            <button class="btn blue" onclick="work('street')">Hustle (₦2,500)</button>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Tech Bro / Sis</div>
+                            <div class="card-sub">Requires Age 18+. Code for foreign clients. Takes 35 energy.</div>
+                            <button class="btn purple" onclick="work('tech')">Freelance (₦45,000)</button>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">Oil Block Executive</div>
+                            <div class="card-sub">Requires Age 25+ & 500 Fame. Elite status. Takes 60 energy.</div>
+                            <button class="btn" onclick="work('oil')">Board Meeting (₦500,000)</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab-city" class="tab-content">
+                    <h2 class="section-title">Live City Activity</h2>
+                    <div class="card">
+                        <div class="card-title">Global Feed (Port Harcourt Server)</div>
+                        <div class="card-sub">See what other registered players are doing in real-time.</div>
+                        <div class="live-feed" id="multiplayerFeed">
+                            <div class="feed-item"><div class="feed-user">Chinedu_Boss</div><div class="feed-action">Just bought a G-Wagon in GRA!</div><div class="feed-time">Just now</div></div>
+                            <div class="feed-item"><div class="feed-user">Preye_Star</div><div class="feed-action">Reached 1M Fame performing at Bole Fest.</div><div class="feed-time">2 mins ago</div></div>
+                            <div class="feed-item"><div class="feed-user">Tari_22</div><div class="feed-action">Was arrested for street fighting.</div><div class="feed-time">5 mins ago</div></div>
+                            <div class="feed-item"><div class="feed-user">Odogwu_PHC</div><div class="feed-action">Started an Oil Company.</div><div class="feed-time">12 mins ago</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-support" class="tab-content">
+                    <h2 class="section-title">Support The Developer</h2>
+                    <div class="card" style="max-width: 600px; margin: 0 auto;">
+                        <div class="card-title" style="text-align: center; font-size: 24px;">Fuel The Empire</div<div class="card-sub" style="text-align: center; font-size: 15px;">Keeping the servers running and pushing new premium updates takes resources. Support the Creator to get exclusive future perks!</div>
+                        
+                        <div class="premium-box">
+                            <div style="color: var(--muted); font-size: 14px; text-transform: uppercase; font-weight: 700;">ZaxCommerce Group:
+Official Bank Details</div>
+                            <div class="acct-number">9024565312</div>
+                            <div class="bank-name">PALM PAY</div>
+                            <div style="margin-top: 15px; font-size: 16px; font-weight: 900; color: #fff;">JOSEPH TAMUNOIYANA FRANCIS</div>
+                        </div>
+                        
+                        <button class="btn pink" style="margin-top: 20px;" onclick="showToast('Thank you for your support! Screenshot your receipt to the developer.', 'success')">I Have Sent Support 🚀</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="nav-btn active" onclick="switchTab('home', this)">🏠 Dashboard</button>
+            <button class="nav-btn" onclick="switchTab('career', this)">💼 Hustle</button>
+            <button class="nav-btn" onclick="switchTab('city', this)">🌍 Live City</button>
+            <button class="nav-btn" onclick="switchTab('support', this)">💎 Support</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal" id="adminModalContent">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 class="modal-title" style="color: #ef4444; border:none; margin:0;">[ SERVER ADMIN PANEL ]</h2>
+                <button onclick="closeAdmin()" style="font-size:24px; color:#fff;">&times;</button>
+            </div>
+            <div style="color:var(--muted); font-size:12px; margin-bottom:20px;">SYSTEM ARCHITECT: JOSEPH TAMUNOIYANA FRANCIS</div>
+            
+            <h3 style="color: var(--gold); margin-bottom: 10px; font-family: 'Cinzel';">Quick Cheats (Self)</h3>
+            <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 30px;">
+                <button class="btn success" style="padding:10px; font-size:12px;" onclick="adminAction('money')">+ ₦50,000,000</button>
+                <button class="btn purple" style="padding:10px; font-size:12px;" onclick="adminAction('stats')">God Mode Stats</button>
+            </div>
+            
+            <h3 style="color: var(--gold); margin-bottom: 10px; font-family: 'Cinzel';">Live Registered Players (Simulation)</h3>
+            <div style="background: rgba(0,0,0,0.5); border-radius: 12px; padding: 10px; overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Net Worth</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chinedu_Boss</td>
+                            <td>₦450M</td>
+                            <td><span class="badge">Online</span></td>
+                            <td><button class="btn danger" style="padding:6px 12px; font-size:10px;" onclick="showToast('Player Banned from Server', 'danger')">BAN</button></td>
+                        </tr>
+                        <tr>
+                            <td>Preye_Star</td>
+                            <td>₦1.2B</td>
+                            <td><span class="badge">Online</span></td>
+                            <td><button class="btn danger" style="padding:6px 12px; font-size:10px;" onclick="showToast('Player Banned from Server', 'danger')">BAN</button></td>
+                        </tr>
+                        <tr>
+                            <td>Tari_22</td>
+                            <td>₦15K</td>
+                            <td><span class="badge offline">Offline</span></td>
+                            <td><button class="btn danger" style="padding:6px 12px; font-size:10px;" onclick="showToast('Player Banned from Server', 'danger')">BAN</button></td>
+
+</tr>
+                        <tr>
+                            <td id="adminSelfName" style="color: var(--gold);">You</td>
+                            <td id="adminSelfMoney">₦0</td>
+                            <td><span class="badge">Admin</span></td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME STATE ---
+        const state = {
+            name: "Player",
+            age: 18, // Starting at 18 for faster gameplay in premium version
+            money: 5000,
+            health: 100,
+            energy: 100,
+            fame: 0
+        };
+
+        // --- CORE FUNCTIONS ---
+        function startGame() {
+            const nameInput = document.getElementById('playerName').value.trim();
+            if(!nameInput) {
+                showToast('Username required to connect to server.', 'danger');
+                return;
+            }
+            state.name = nameInput;
+            document.getElementById('navName').innerText = state.name;
+            document.getElementById('adminSelfName').innerText = state.name + " (You)";
+            
+            // Transition
+            const intro = document.getElementById('intro');
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+                updateUI();
+                localLog(Connected to Port Harcourt Server as ${state.name}.);
+                showToast(Welcome to the Empire, ${state.name}, 'success');
+            }, 500);
+            
+            // Start simulated multiplayer feed
+            setInterval(simulateMultiplayerFeed, 8000);
+        }
+
+        function updateUI() {
+            document.getElementById('statAge').innerText = state.age;
+            document.getElementById('statMoney').innerText = state.money.toLocaleString();
+            document.getElementById('statHealth').innerText = state.health;
+            document.getElementById('statEnergy').innerText = state.energy;
+            document.getElementById('statFame').innerText = state.fame;
+            document.getElementById('adminSelfMoney').innerText = "₦" + state.money.toLocaleString();
+        }
+
+        function localLog(msg) {
+            const feed = document.getElementById('eventFeed');
+            const div = document.createElement('div');
+            div.className = 'feed-item';
+            div.style.borderLeftColor = 'var(--gold)';
+            div.innerHTML = <div class="feed-action" style="color:var(--gold-3)">${msg}</div><div class="feed-time">Age ${state.age}</div>;
+            feed.prepend(div);
+        }
+
+        function showToast(message, type = 'gold') {
+            const container = document.getElementById('toasts');
+            const toast = document.createElement('div');
+            toast.className = toast ${type};
+            
+            let icon = '🔔';
+            if(type === 'success') icon = '✅';
+            if(type === 'danger') icon = '⚠️';
+            
+            toast.innerHTML = <span>${icon}</span> <span>${message}</span>;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(60px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- ACTIONS ---
+        function ageUp() {
+            state.age++;
+            state.health -= Math.floor(Math.random() * 5);
+            state.energy = 100;
+            localLog(Happy Birthday! You are now ${state.age} years old.);
+            updateUI();
+            
+            // Random server event broadcast simulation
+            if(Math.random() > 0.7) {
+                simulateMultiplayerFeed(${state.name} just turned ${state.age}!);
+            }
+        }
+
+function rest() {
+            if(state.energy >= 100) return showToast("Already fully rested.", "gold");
+            state.energy = 100;
+            state.health = Math.min(100, state.health + 15);
+            localLog("Slept in your apartment. Restored energy.");
+            updateUI();
+        }
+
+        function work(type) {
+            let cost = 0, earn = 0, reqAge = 0, reqFame = 0, jobName = "";
+            
+            if(type === 'street') { cost = 15; earn = 2500; jobName = "Street Hustle"; }
+            if(type === 'tech') { cost = 35; earn = 45000; reqAge = 18; jobName = "Tech Freelance"; }
+            if(type === 'oil') { cost = 60; earn = 500000; reqAge = 25; reqFame = 500; jobName = "Oil Block Exec"; }
+
+            if(state.age < reqAge) return showToast(Must be ${reqAge}+ for this job., "danger");
+            if(state.fame < reqFame) return showToast(Needs ${reqFame} Fame., "danger");
+            if(state.energy < cost) return showToast("Not enough energy. Go sleep.", "danger");
+
+            state.energy -= cost;
+            state.money += earn;
+            
+            // Slight fame chance on work
+            if(Math.random() > 0.8) {
+                state.fame += 5;
+                showToast("Gained +5 Fame from networking!", "success");
+            }
+
+            localLog(Completed ${jobName}. Earned ₦${earn.toLocaleString()}.);
+            updateUI();
+        }
+
+        // --- NAVIGATION ---
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab-${tabId}).classList.add('active');
+        }
+
+        // --- SIMULATED MULTIPLAYER LOGIC ---
+        const fakeUsers = ["Boma_King", "Ada_PHC", "Timi_Wealth", "Chief_Wike_Fan", "Sabi_Boy_99"];
+        const fakeActions = [
+            "just bought a mansion in Peter Odili Road.",
+            "was spotted at a VIP club in GRA.",
+            "won a major oil contract.",
+            "just sent ₦1,000,000 to the developer!",
+            "lost all their money in a bad crypto trade.",
+            "is trending on Port Harcourt Twitter."
+        ];
+
+        function simulateMultiplayerFeed(customMsg = null) {
+            const feed = document.getElementById('multiplayerFeed');
+            const div = document.createElement('div');
+            div.className = 'feed-item';
+            
+            if(customMsg) {
+                div.innerHTML = <div class="feed-user" style="color:var(--pink)">Server Alert</div><div class="feed-action">${customMsg}</div><div class="feed-time">Now</div>;
+            } else {
+                let user = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                let action = fakeActions[Math.floor(Math.random() * fakeActions.length)];
+                div.innerHTML = <div class="feed-user">${user}</div><div class="feed-action">${action}</div><div class="feed-time">Now</div>;
+            }
+            
+            feed.prepend(div);
+            // Keep feed trim
+            if(feed.children.length > 15) feed.removeChild(feed.lastChild);
+        }
+
+        // --- HIDDEN ADMIN PANEL ---
+        let clicks = 0;
+        let clickTimer;
+        function adminClicks() {
+            clicks++;
+            clearTimeout(clickTimer);
+            if(clicks >= 3) {
+                let pwd = prompt("AUTHORIZATION REQUIRED. ENTER MASTER PASSWORD:");
+                if(pwd === "admin123@") {
+                    document.getElementById('adminModal').style.display = 'flex';
+                    setTimeout(() => document.getElementById('adminModalContent').classList.add('show'), 10);
+
+document.getElementById('adminModal').style.opacity = '1';
+                    showToast("Master Admin Override Accepted.", "success");
+                } else if (pwd !== null) {
+                    showToast("ACCESS DENIED. IP LOGGED.", "danger");
+                }
+                clicks = 0;
+            }
+            clickTimer = setTimeout(() => clicks = 0, 1000);
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminModalContent').classList.remove('show');
+            document.getElementById('adminModal').style.opacity = '0';
+            setTimeout(() => document.getElementById('adminModal').style.display = 'none', 300);
+        }
+
+        function adminAction(type) {
+            if(type === 'money') {
+                state.money += 50000000;
+                showToast("Injected ₦50M into your account.", "success");
+            }
+            if(type === 'stats') {
+                state.health = 999;
+                state.energy = 999;
+                state.fame += 10000;
+                showToast("God Mode Stats Applied.", "success");
+            }
+            updateUI();
+        }
+    </script>
+</body>
+</html>
