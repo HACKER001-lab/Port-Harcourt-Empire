@@ -4615,3 +4615,37 @@ window.addEventListener("DOMContentLoaded", ()=>{
 </script>
 </body>
 </html>
+function promptAdmin(){
+ let pwd = prompt("ENTER DEVELOPER PASSWORD:");
+
+ if(pwd === "admin123@"){
+   document.getElementById("adminModal").style.display = "flex";
+   toast("Admin Access Granted","gold");
+ } else if(pwd !== null){
+   toast("Wrong Password","warn");
+ }
+}
+
+function adminCheat(type){
+ const p = state.player;
+
+ if(type==="money"){
+   p.money += 10000000;
+ }
+
+ if(type==="stats"){
+   p.health = 100;
+   p.energy = 100;
+ }
+
+ if(type==="fame"){
+   p.fame += 1000;
+ }
+
+ if(type==="godmode"){
+   p.godMode = !p.godMode;
+ }
+
+ save();
+ render();
+}
