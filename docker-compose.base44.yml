@@ -1,4 +1,75 @@
+# Garden City: Reign — development stack.
+# web (nginx, host :3000) -> api (Node, :4000, /api) -> db (Postgres 16)
+# Source is bind-mounted so edits are live; dependencies live in the image.
+
 services:
+  db:
+    image: postgres:16-alpine
+    labels:
+      base44.kind: "infra"
+    environment:
+      POSTGRES_USER: gcr
+      POSTGRES_PASSWORD: gcr_dev_only_password
+      POSTGRES_DB: gcr
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gcr -d gcr"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    restart: on-failure
+
+  migrate:
+    build: ./server
+    command: ["node", "scripts/migrate.js"]
+    environment:
+      DATABASE_URL: postgres://gcr:gcr_dev_only_password@db:5432/gcr
+      NODE_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - /run/base44/app.env
+    restart: "no"
+
+  api:
+    build: ./server
+    command: ["node", "--watch", "src/app.js"]
+    labels:
+      base44.project: "Garden City: Reign API"
+      base44.kind: "api"
+      base44.port: "4000"
+    environment:
+      DATABASE_URL: postgres://gcr:gcr_dev_only_password@db:5432/gcr
+      PORT: "4000"
+      NODE_ENV: development
+      # Dev-only: verification/reset links are stored in a readable outbox
+      # because no SMTP account is configured. Never set this in production.
+      MAIL_OUTBOX_DEV: "1"
+      BASE44_PREVIEW_MODE: "${BASE44_PREVIEW_MODE:-}"
+    volumes:
+      - ./server/src:/app/src
+      - ./server/scripts:/app/scripts
+      - ./server/migrations:/app/migrations
+      - ./server/test:/app/test
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+    restart: on-failure
+    env_file:
+      # Platform-managed secrets (SMTP for real email). Last entry wins.
+      - /run/base44/app.env
+
   web:
     image: nginx:alpine
     labels:
@@ -16,6 +87,8 @@ services:
       - ./docker/nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
     environment:
       - BASE44_PREVIEW_MODE
+    depends_on:
+      - api
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
       interval: 10s
@@ -23,3 +96,6 @@ services:
       retries: 5
       start_period: 5s
     restart: on-failure
+
+volumes:
+  db-data:

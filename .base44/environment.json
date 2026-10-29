@@ -1,6 +1,32 @@
 {
   "previewPort": 3000,
-  "healthPath": "/",
-  "startCommand": "docker compose -f docker-compose.base44.yml up -d",
-  "secrets": []
+  "healthPath": "/api/health",
+  "startCommand": "docker compose -f docker-compose.base44.yml up -d --build",
+  "secrets": [
+    {
+      "name": "SMTP_HOST",
+      "description": "SMTP host for verification and password-reset email (production). Not required in the sandbox: links are captured in the development mail outbox.",
+      "requiredAtBoot": false
+    },
+    {
+      "name": "SMTP_PORT",
+      "description": "SMTP port, usually 587 (STARTTLS) or 465 (TLS).",
+      "requiredAtBoot": false
+    },
+    {
+      "name": "SMTP_USER",
+      "description": "SMTP username from your email provider.",
+      "requiredAtBoot": false
+    },
+    {
+      "name": "SMTP_PASS",
+      "description": "SMTP password or app password.",
+      "requiredAtBoot": false
+    },
+    {
+      "name": "MAIL_FROM",
+      "description": "From address for account email, e.g. no-reply@yourdomain.com.",
+      "requiredAtBoot": false
+    }
+  ]
 }

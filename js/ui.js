@@ -59,6 +59,14 @@ const NAV_GROUPS = [
     ]
   },
   {
+    title: "Online city",
+    items: [
+      { id: "players", label: "Players", icon: "🫂" },
+      { id: "businesses", label: "Businesses", icon: "🏪" },
+      { id: "wallet", label: "Wallet", icon: "🏦" }
+    ]
+  },
+  {
     title: "Legacy & account",
     items: [
       { id: "awards", label: "Awards", icon: "🏆" },
@@ -85,6 +93,17 @@ function openMoreMenu() {
       }).join('') +
       '</div></div>';
   });
+
+  /* Administration is only offered to a verified administrator session.
+     The server still enforces the role on every call. */
+  if (typeof GCR !== "undefined" && GCR.isAdmin && GCR.isAdmin()) {
+    html += '<div style="margin-top:16px">' +
+      '<div class="page-eyebrow">Operations</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">' +
+      '<button class="btn ghost" style="justify-content:flex-start;text-align:left;padding:10px 12px;font-size:12px" ' +
+      'onclick="closeModal();switchView(\'admin\')"><span style="margin-right:6px">🛡️</span>Administration</button>' +
+      '</div></div>';
+  }
 
   html += '<div class="btn-row" style="margin-top:20px">' +
     '<button class="btn ghost" onclick="closeModal()">Close</button></div>';

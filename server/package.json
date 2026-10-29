@@ -1,0 +1,19 @@
+{
+  "name": "gcr-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Authoritative multiplayer backend for Garden City: Reign",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "migrate": "node scripts/migrate.js",
+    "provision-admin": "node scripts/provision-admin.js",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemailer": "^6.9.16",
+    "pg": "^8.13.1"
+  }
+}

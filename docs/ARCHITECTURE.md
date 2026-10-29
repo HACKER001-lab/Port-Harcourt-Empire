@@ -1,7 +1,15 @@
 # Target Architecture — Garden City: Reign (working title)
 
-Companion to [`docs/AUDIT.md`](./AUDIT.md). This document is a **plan**, not an implementation claim:
-none of the server-side components below exist in the repository yet.
+Companion to [`docs/AUDIT.md`](./AUDIT.md).
+
+> **Status update.** The multiplayer foundation is now implemented. See
+> [`docs/MULTIPLAYER.md`](./MULTIPLAYER.md) for what exists, how it is secured and
+> what was tested. Two choices below were revised during implementation: the
+> backend is a self-hosted Node + Postgres service (not Supabase Auth/Realtime),
+> because authoritative economy rules, row locks and offline settlement need
+> ordinary transactions and a persistent process; and realtime is deferred until
+> a feature actually needs it — the shipped screens use authenticated requests.
+> The remaining sections are kept as the design rationale and the roadmap.
 
 ---
 

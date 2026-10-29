@@ -115,6 +115,17 @@ function ensureCityState() {
   }
 }
 
+/* The signed-in character's district is authoritative on the server. This maps
+   it to the map's slug so the shared location is what the map highlights. */
+function onlineDistrictSlug() {
+  if (typeof GCR === "undefined" || !GCR.signedIn || !GCR.signedIn()) return null;
+  var c = GCR.character();
+  var w = GCR.world && GCR.world.data;
+  if (!c || !w) return null;
+  var d = w.districts.find(function (x) { return x.id === c.districtId; });
+  return d ? d.slug : null;
+}
+
 function districtById(id) {
   return activeCity().districts.find(d => d.id === id);
 }
@@ -131,7 +142,10 @@ function seatDistance(aId, bId) {
 }
 
 function fareTo(dId) {
-  return 120 + seatDistance(state.player.district, dId) * 12;
+  var rules = (typeof GCR !== "undefined" && GCR.world && GCR.world.data) ? GCR.world.data.rules : null;
+  var base = rules ? rules.travelBaseFare : 120;
+  var per = rules ? rules.travelFarePerUnit : 12;
+  return base + seatDistance(state.player.district, dId) * per;
 }
 
 function cityMapSvg() {
@@ -168,7 +182,12 @@ function cityMapSvg() {
 }
 
 function viewCity() {
+  const shared = onlineDistrictSlug();
   ensureCityState();
+  if (shared) state.player.district = shared;
+  if (typeof GCR !== "undefined" && GCR.signedIn && GCR.signedIn() && !GCR.world.data) {
+    GCR.loadWorld().then(function () { GCR.reload(); });
+  }
   const city = activeCity();
   if (!selectedDistrict || !districtById(selectedDistrict)) selectedDistrict = state.player.district;
   const district = districtById(selectedDistrict);
@@ -214,6 +233,13 @@ function viewCity() {
           ? '<button class="btn ghost" disabled>Already here</button>'
           : '<button class="btn" onclick="travelToDistrict(\'' + district.id + '\')">Travel to ' + district.name + ' · ' + fmtN(fare) + '</button>') +
       '</div>' +
+      (shared
+        ? '<div class="notice neutral" style="margin-top:12px">Your shared-world location is stored on the server. Fares, energy and travel timing are validated there.</div>' +
+          '<div class="btn-row" style="margin-top:8px">' +
+            '<button class="btn ghost sm" onclick="switchView(\'businesses\')">Player businesses here</button>' +
+            '<button class="btn ghost sm" onclick="switchView(\'players\')">Players here</button>' +
+          '</div>'
+        : "") +
     '</div>' +
 
     '<div class="card">' +
@@ -232,9 +258,29 @@ function selectDistrict(id) {
   render();
 }
 
-function travelToDistrict(id) {
+async function travelToDistrict(id) {
   ensureCityState();
   if (id === state.player.district) { toast("You are already there.", "warn"); return; }
+
+  /* Signed in: the server decides the fare, the energy cost and whether the
+     move is allowed. The client only asks. */
+  if (typeof GCR !== "undefined" && GCR.signedIn && GCR.signedIn()) {
+    try {
+      const world = await GCR.loadWorld();
+      const target = world && world.districts.find(function (d) { return d.slug === id; });
+      if (!target) { toast("That district is not part of the shared world.", "warn"); return; }
+      const res = await GCR.api("/actions/travel", { method: "POST", body: { districtId: target.id } });
+      GCR.applyCharacter(res.character);
+      state.player.district = id;
+      selectedDistrict = id;
+      toast("Arrived in " + res.district.name + " · fare " + GCR.money(res.fare) + ".", "success");
+      GCR.reload();
+    } catch (e) {
+      GCR.fail(e);
+    }
+    return;
+  }
+
   const fare = fareTo(id);
   if (state.player.money < fare) { toast("Not enough money for the fare.", "warn"); return; }
   if (state.player.energy < 3) { toast("Too tired to travel. Rest first.", "warn"); return; }

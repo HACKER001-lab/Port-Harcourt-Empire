@@ -121,6 +121,8 @@ function viewActivities() {
       '<div class="page-sub">Game time in the Garden City and everything you currently have running.</div>' +
     '</div>' +
 
+    (typeof GCR !== "undefined" && GCR.onlineTimePanel ? GCR.onlineTimePanel() : "") +
+
     '<div class="card" style="margin-bottom:16px">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">' +
         '<div>' +
@@ -150,12 +152,14 @@ function viewActivities() {
     '</div>' +
 
     '<div class="card">' +
-      '<div class="card-title">How time will work</div>' +
-      '<div class="card-sub">Preparation for the persistent world clock.</div>' +
+      '<div class="card-title">How time works</div>' +
+      '<div class="card-sub">Two clocks, honestly separated.</div>' +
       '<div class="notice warn">' +
-        '<div><strong>Preview clock.</strong> Time currently advances in this browser from your save. When accounts ship, ' +
-        'game time is owned by the server, offline progress is settled in the database, and completion is validated ' +
-        'server-side — never by a countdown on this page.</div>' +
+        '<div><strong>Solo story clock.</strong> The clock below advances in this browser from your local save. ' +
+        (typeof GCR !== "undefined" && GCR.signedIn && GCR.signedIn()
+          ? 'Online activities above use the server clock and are settled in the database, so they keep running while the game is closed.'
+          : 'Sign in to use the server clock: online activities settle in the database and pay only when the server validates completion.') +
+        '</div>' +
       '</div>' +
     '</div>';
 
