@@ -11,6 +11,8 @@ services:
       # Bind-mount the actual source files so edits show on refresh (no rebuild).
       - ./index.html:/usr/share/nginx/html/index.html:ro
       - ./branding.js:/usr/share/nginx/html/branding.js:ro
+      - ./css:/usr/share/nginx/html/css:ro
+      - ./js:/usr/share/nginx/html/js:ro
       - ./docker/nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
     environment:
       - BASE44_PREVIEW_MODE

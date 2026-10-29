@@ -676,6 +676,7 @@ input,select,textarea{font-family:inherit}
   .nav-btn-icon{font-size:16px}
 }
 </style>
+<link rel="stylesheet" href="css/theme-light.css" />
 </head>
 <body>
 <div class="stars"></div>
@@ -765,7 +766,10 @@ input,select,textarea{font-family:inherit}
       </div>
     </div>
     <div class="stats-bar" id="stats-bar"></div>
-    <div class="live-clock" id="live-clock"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="theme-toggle" data-theme-toggle onclick="toggleTheme()">☾ Dark</button>
+      <div class="live-clock" id="live-clock"></div>
+    </div>
   </div>
 
   <div class="main">
@@ -2220,13 +2224,17 @@ function render(){
     ${p.scandalLevel > 0 ? `<div class="stat-pill scandal">📰 Scandal ${p.scandalLevel}</div>` : ""}
   `;
 
-  // Bottom nav
-  document.getElementById("bottom-nav").innerHTML = NAV.map(n=>`
-    <button class="nav-btn ${state.view===n.id?'active':''}" onclick="switchView('${n.id}')">
+  // Bottom nav — five primary tabs; everything else lives in the "More" sheet
+  document.getElementById("bottom-nav").innerHTML = PRIMARY_NAV.map(n=>{
+    const active = n.id==="more"
+      ? !!SECONDARY_NAV.find(x=>x.id===state.view) || state.view==="admin"
+      : state.view===n.id;
+    const action = n.id==="more" ? "openMoreMenu()" : `switchView('${n.id}')`;
+    return `<button class="nav-btn ${active?'active':''}" onclick="${action}">
       <span class="nav-btn-icon">${n.icon}</span>
       <span>${n.label}</span>
-    </button>
-  `).join("");
+    </button>`;
+  }).join("");
 
   // Content
   const fns = {
@@ -2236,7 +2244,8 @@ function render(){
     phone:viewPhone, laptop:viewLaptop, wardrobe:viewWardrobe, meet:viewMeet,
     travel:viewTravel, church:viewChurch, auditions:viewAuditions
   };
-  document.getElementById("content").innerHTML = (fns[state.view] || viewHome)();
+  const extraView = (window.VIEWS || {})[state.view];
+  document.getElementById("content").innerHTML = extraView ? extraView() : (fns[state.view] || viewHome)();
   // Re-bind any compose textarea state
   const ta = document.getElementById("compose-text");
   if(ta) ta.value = composeText;
@@ -4619,6 +4628,13 @@ window.addEventListener("DOMContentLoaded", ()=>{
 });
 
 </script>
+
+<!-- Interface layer: navigation, world clock, city map, arena, account/admin -->
+<script src="js/ui.js"></script>
+<script src="js/game-time.js"></script>
+<script src="js/city.js"></script>
+<script src="js/pvp.js"></script>
+<script src="js/account.js"></script>
 </body>
 </html>
 function promptAdmin(){

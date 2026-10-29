@@ -5,6 +5,23 @@ none of the server-side components below exist in the repository yet.
 
 ---
 
+## 0. What is already implemented (interface phase)
+
+Shipped in the client, verified in the preview, **no server dependency**:
+
+- Light design system as the default (`css/theme-light.css`), dark mode opt-in, semantic tokens, editorial typography.
+- Five-tab navigation with a grouped destination sheet (replaces 20 ungrouped buttons).
+- `GameClock` adapter (`js/game-time.js`) — currently `mode: "local"`; the server implementation replaces `now()`/`activities()` without touching the screens that consume them.
+- Data-driven city map (`js/city.js`) — 9 fictionalised Port Harcourt districts, routes, venues, fare-based travel, and a placeholder entry proving a second city needs data only.
+- Arena (`js/pvp.js`) — training, sparring, ratings, rankings and history on real state, resolved locally.
+- Account screen with a **disabled** auth interface, and a deny-all administration console at `#admin`.
+
+Deliberately **not** implemented, because doing so honestly requires the backend:
+
+- No login/registration/recovery that pretends to work (no provider connected).
+- No administrative authority in the client (no password gate, no cheats).
+- No server-owned clock and no server-validated rewards.
+
 ## 1. Guiding constraints
 
 - Keep the existing game **playable and recoverable** while the multiplayer client is built beside it.

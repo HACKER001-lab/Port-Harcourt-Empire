@@ -20,8 +20,8 @@
       taglineLine: "Garden City Stardom \u00b7 Port Harcourt",
       metaDescription:
         "TAMUNOIYANA \u2014 Garden City Stardom. A Port Harcourt life simulation: grow up, build fame, fortune and family in the Garden City.",
-      themeColor: "#05060d",
-      theme: "dark",
+      themeColor: "#f4f6f8",
+      theme: "light",
       workingTitle: false
     },
 
