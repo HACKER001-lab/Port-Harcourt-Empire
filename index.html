@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 <title>TAMUNOIYANA — Garden City Stardom</title>
+<!-- Managed by branding.js — keep these tags, they are filled from the brand preset. -->
+<meta name="description" content="" />
+<meta name="theme-color" content="#05060d" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -681,9 +684,9 @@ input,select,textarea{font-family:inherit}
 <!-- INTRO / CHARACTER CREATION SCREEN -->
 <div id="intro" class="intro">
   <div class="intro-card">
-    <div class="intro-logo serif">T</div>
-    <div class="intro-title">TAMUNOIYANA</div>
-    <div class="intro-sub">Garden City Stardom · Port Harcourt</div>
+    <div class="intro-logo serif" data-brand="letter">T</div>
+    <div class="intro-title" data-brand="name">TAMUNOIYANA</div>
+    <div class="intro-sub" data-brand="tagline-line">Garden City Stardom · Port Harcourt</div>
 
     <div class="card" style="text-align:left;padding:30px">
       <div class="card-title">Create Your Star</div>
@@ -755,10 +758,10 @@ input,select,textarea{font-family:inherit}
   </div>
   <div class="topbar">
     <div class="brand">
-      <div class="brand-logo serif">T</div>
+      <div class="brand-logo serif" data-brand="letter">T</div>
       <div>
-        <div class="brand-title">TAMUNOIYANA</div>
-        <div class="brand-sub">Garden City Stardom</div>
+        <div class="brand-title" data-brand="name">TAMUNOIYANA</div>
+        <div class="brand-sub" data-brand="tagline-short">Garden City Stardom</div>
       </div>
     </div>
     <div class="stats-bar" id="stats-bar"></div>
@@ -776,6 +779,9 @@ input,select,textarea{font-family:inherit}
 
 <!-- MODAL HOST -->
 <div id="modal-host"></div>
+
+<!-- Branding: name, tagline, wordmark and metadata live in branding.js -->
+<script src="branding.js"></script>
 
 <script>
 /* =====================================================
@@ -4516,7 +4522,7 @@ function creditsBlock(){
       <div style="font-size:13px;color:var(--text);margin-top:14px;letter-spacing:.06em">Creator · Visionary · Garden City Original</div>
       <div class="credits-role">Game Concept & Direction</div>
       <div style="margin-top:24px;font-size:11px;color:var(--muted);letter-spacing:.2em;line-height:1.8">
-        TAMUNOIYANA — GARDEN CITY STARDOM<br/>
+        ${BRAND.displayName} — ${BRAND.taglineShort.toUpperCase()}<br/>
         © ${new Date().getFullYear()} · Built with passion for Port Harcourt<br/>
         From the Mile 1 streets to the silver screen
       </div>
