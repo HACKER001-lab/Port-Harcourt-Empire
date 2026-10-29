@@ -9,7 +9,7 @@
     "dev": "node --watch src/app.js",
     "migrate": "node scripts/migrate.js",
     "provision-admin": "node scripts/provision-admin.js",
-    "test": "node --test test/"
+    "test": "node --test test/*.test.js"
   },
   "dependencies": {
     "express": "^4.21.2",

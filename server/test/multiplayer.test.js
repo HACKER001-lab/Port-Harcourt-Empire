@@ -1,6 +1,6 @@
 /* Multiplayer integration tests — two (or more) real accounts against the
    running API and database. Run inside the api container:
-     docker compose -f docker-compose.base44.yml exec api node --test test/
+     docker compose -f docker-compose.base44.yml exec api npm test
 */
 
 const { test, before } = require("node:test");
